@@ -14,12 +14,11 @@ public class ProfileTest {
     private Criteria empty_criteria = new Criteria();
     private String BOOLEAN_QUESTION_TEXT = "Did you have dinner?";
     private BooleanQuestion booleanQuestion = new BooleanQuestion(1, BOOLEAN_QUESTION_TEXT);
+    private Criteria criterions = new Criteria();
 
 
     @Test
     public void not_match_when_criteria_is_empty() {
-        Criteria empty_criteria = new Criteria();
-
         boolean matches = profile.matches(empty_criteria);
 
         assertThat(matches, is(false));
@@ -31,7 +30,6 @@ public class ProfileTest {
 
         profile.add(new Answer(question, 0));
 
-        Criteria criterions = new Criteria();
         Answer answer = new Answer(question, 1);
         criterions.add(new Criterion(answer, Weight.DontCare));
 
@@ -44,7 +42,6 @@ public class ProfileTest {
     public void match_when_answer_is_wrong_and_weight_is_care() {
         profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
 
-        Criteria criterions = new Criteria();
         Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_YES);
         criterions.add(new Criterion(other_answer, Weight.Important));
 
@@ -63,7 +60,6 @@ public class ProfileTest {
     public void score_is_zero_when_criteria_is_not_match() {
         profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
 
-        Criteria criterions = new Criteria();
         Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_YES);
         criterions.add(new Criterion(other_answer, Weight.Important));
 
@@ -76,7 +72,6 @@ public class ProfileTest {
     public void score_not_zero_when_criteria_is_match() {
         profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
 
-        Criteria criterions = new Criteria();
         Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO);
         criterions.add(new Criterion(other_answer, Weight.Important));
 

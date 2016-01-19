@@ -11,6 +11,7 @@ public class ProfileTest {
     public static final int BOOLEAN_QUESTION_ANSWER_NO = 0;
     public static final int BOOLEAN_QUESTION_ANSWER_YES = 1;
     private Profile profile = new Profile("xiao zhang");
+    private Criteria empty_criteria = new Criteria();
 
 
     @Test
@@ -50,5 +51,11 @@ public class ProfileTest {
         boolean matches = profile.matches(criterions);
 
         assertThat(matches, is(false));
+    }
+
+    @Test
+    public void score_is_zero_when_criteria_is_empty() throws Exception {
+        profile.matches(empty_criteria);
+        assertThat(profile.score(), is(0));
     }
 }

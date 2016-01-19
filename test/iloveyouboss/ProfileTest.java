@@ -1,5 +1,6 @@
 package iloveyouboss;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -10,11 +11,24 @@ public class ProfileTest {
 
     public static final int BOOLEAN_QUESTION_ANSWER_NO = 0;
     public static final int BOOLEAN_QUESTION_ANSWER_YES = 1;
+
     private Profile profile = new Profile("xiao zhang");
+
     private Criteria empty_criteria = new Criteria();
-    private String BOOLEAN_QUESTION_TEXT = "Did you have dinner?";
-    private BooleanQuestion booleanQuestion = new BooleanQuestion(1, BOOLEAN_QUESTION_TEXT);
-    private Criteria criterions = new Criteria();
+    private Criteria criteria = new Criteria();
+
+    private String BOOLEAN_QUESTION_FOR_DINNER = "Did you have dinner?";
+    private BooleanQuestion booleanQuestionOne = new BooleanQuestion(1, BOOLEAN_QUESTION_FOR_DINNER);
+    private BooleanQuestion BOOLEAN_QUESTION_WEIGHT = new BooleanQuestion(3, "Are you too fat?");
+
+    private Answer ANSWER_NOT_EAT_FOR_DINNER = new Answer(booleanQuestionOne, BOOLEAN_QUESTION_ANSWER_NO);
+    private Answer ANSWER_YES_EAT_FOR_DINNER = new Answer(booleanQuestionOne, BOOLEAN_QUESTION_ANSWER_YES);
+    private Answer ANSWER_YES_TOO_FAT_FOR_WEIGHT = new Answer(booleanQuestionOne, BOOLEAN_QUESTION_ANSWER_YES);
+    private Answer standard_answer_for_dinner = new Answer(booleanQuestionOne, BOOLEAN_QUESTION_ANSWER_YES);
+    private Answer standard_answer_for_your_weight = new Answer(BOOLEAN_QUESTION_WEIGHT, BOOLEAN_QUESTION_ANSWER_NO);
+
+    private Criterion EAT_DINNER_CRITERION = new Criterion(standard_answer_for_dinner, Weight.Important);
+    private Criterion WEIGHT_CRITERION = new Criterion(standard_answer_for_your_weight, Weight.DontCare);
 
 
     @Test
@@ -26,26 +40,20 @@ public class ProfileTest {
 
     @Test
     public void match_when_answer_is_right_or_weight_is_dont_care() {
-        BooleanQuestion question = new BooleanQuestion(1, BOOLEAN_QUESTION_TEXT);
+        profile.add(ANSWER_YES_TOO_FAT_FOR_WEIGHT);
+        criteria.add(WEIGHT_CRITERION);
 
-        profile.add(new Answer(question, 0));
-
-        Answer answer = new Answer(question, 1);
-        criterions.add(new Criterion(answer, Weight.DontCare));
-
-        boolean matches = profile.matches(criterions);
+        boolean matches = profile.matches(criteria);
 
         assertThat(matches, is(true));
     }
 
     @Test
     public void match_when_answer_is_wrong_and_weight_is_care() {
-        profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(ANSWER_NOT_EAT_FOR_DINNER);
+        criteria.add(EAT_DINNER_CRITERION);
 
-        Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_YES);
-        criterions.add(new Criterion(other_answer, Weight.Important));
-
-        boolean matches = profile.matches(criterions);
+        boolean matches = profile.matches(criteria);
 
         assertThat(matches, is(false));
     }
@@ -58,24 +66,32 @@ public class ProfileTest {
 
     @Test
     public void score_is_zero_when_criteria_is_not_match() {
-        profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(ANSWER_NOT_EAT_FOR_DINNER);
+        criteria.add(EAT_DINNER_CRITERION);
 
-        Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_YES);
-        criterions.add(new Criterion(other_answer, Weight.Important));
-
-        profile.matches(criterions);
+        profile.matches(criteria);
 
         assertThat(profile.score(), is(0));
     }
 
     @Test
     public void score_not_zero_when_criteria_is_match() {
-        profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(ANSWER_YES_EAT_FOR_DINNER);
+        criteria.add(EAT_DINNER_CRITERION);
 
-        Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO);
-        criterions.add(new Criterion(other_answer, Weight.Important));
+        profile.matches(criteria);
 
-        profile.matches(criterions);
+        assertThat(profile.score(), is(1000));
+    }
+
+    @Test
+    @Ignore
+    public void compute_score_correct_when_have_multiple_criterion() {
+        profile.add(new Answer(booleanQuestionOne, BOOLEAN_QUESTION_ANSWER_NO));
+
+        criteria.add(EAT_DINNER_CRITERION);
+
+        profile.matches(criteria);
 
         assertThat(profile.score(), is(1000));
     }

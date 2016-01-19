@@ -60,7 +60,7 @@ public class ProfileTest {
     }
 
     @Test
-    public void score_is_zero_when_criteria_is_not_match () {
+    public void score_is_zero_when_criteria_is_not_match() {
         BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
 
         profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
@@ -72,5 +72,20 @@ public class ProfileTest {
         profile.matches(criterions);
 
         assertThat(profile.score(), is(0));
+    }
+
+    @Test
+    public void score_not_zero_when_criteria_is_match() {
+        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
+
+        profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
+
+        Criteria criterions = new Criteria();
+        Answer other_answer = new Answer(question, BOOLEAN_QUESTION_ANSWER_NO);
+        criterions.add(new Criterion(other_answer, Weight.Important));
+
+        profile.matches(criterions);
+
+        assertThat(profile.score(), is(1000));
     }
 }

@@ -7,9 +7,14 @@ import static org.junit.Assert.*;
 
 
 public class ProfileTest {
+
+    public static final int BOOLEAN_QUESTION_ANSWER_NO = 0;
+    public static final int BOOLEAN_QUESTION_ANSWER_YES = 1;
+    private Profile profile = new Profile("xiao zhang");
+
+
     @Test
-    public void not_match_when_criteria_is_empty() throws Exception {
-        Profile profile = new Profile("xiao zhang");
+    public void not_match_when_criteria_is_empty() {
         Criteria empty_criteria = new Criteria();
 
         boolean matches = profile.matches(empty_criteria);
@@ -18,8 +23,7 @@ public class ProfileTest {
     }
 
     @Test
-    public void match_when_answer_is_right() throws Exception {
-        Profile profile = new Profile("xiao zhang");
+    public void match_when_answer_is_right_or_weight_is_dont_care() {
         BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
 
         profile.add(new Answer(question, 0));
@@ -31,5 +35,20 @@ public class ProfileTest {
         boolean matches = profile.matches(criterions);
 
         assertThat(matches, is(true));
+    }
+
+    @Test
+    public void match_when_answer_is_wrong_and_weight_is_care() throws Exception {
+        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
+
+        profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
+
+        Criteria criterions = new Criteria();
+        Answer other_answer = new Answer(question, BOOLEAN_QUESTION_ANSWER_YES);
+        criterions.add(new Criterion(other_answer, Weight.Important));
+
+        boolean matches = profile.matches(criterions);
+
+        assertThat(matches, is(false));
     }
 }

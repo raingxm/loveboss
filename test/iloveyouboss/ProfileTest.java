@@ -39,7 +39,7 @@ public class ProfileTest {
     }
 
     @Test
-    public void match_when_answer_is_wrong_and_weight_is_care() throws Exception {
+    public void match_when_answer_is_wrong_and_weight_is_care() {
         BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
 
         profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
@@ -54,8 +54,23 @@ public class ProfileTest {
     }
 
     @Test
-    public void score_is_zero_when_criteria_is_empty() throws Exception {
+    public void score_is_zero_when_criteria_is_empty() {
         profile.matches(empty_criteria);
+        assertThat(profile.score(), is(0));
+    }
+
+    @Test
+    public void score_is_zero_when_criteria_is_not_match () {
+        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
+
+        profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
+
+        Criteria criterions = new Criteria();
+        Answer other_answer = new Answer(question, BOOLEAN_QUESTION_ANSWER_YES);
+        criterions.add(new Criterion(other_answer, Weight.Important));
+
+        profile.matches(criterions);
+
         assertThat(profile.score(), is(0));
     }
 }

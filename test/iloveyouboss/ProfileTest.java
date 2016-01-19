@@ -12,6 +12,8 @@ public class ProfileTest {
     public static final int BOOLEAN_QUESTION_ANSWER_YES = 1;
     private Profile profile = new Profile("xiao zhang");
     private Criteria empty_criteria = new Criteria();
+    private String BOOLEAN_QUESTION_TEXT = "Did you have dinner?";
+    private BooleanQuestion booleanQuestion = new BooleanQuestion(1, BOOLEAN_QUESTION_TEXT);
 
 
     @Test
@@ -25,7 +27,7 @@ public class ProfileTest {
 
     @Test
     public void match_when_answer_is_right_or_weight_is_dont_care() {
-        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
+        BooleanQuestion question = new BooleanQuestion(1, BOOLEAN_QUESTION_TEXT);
 
         profile.add(new Answer(question, 0));
 
@@ -40,12 +42,10 @@ public class ProfileTest {
 
     @Test
     public void match_when_answer_is_wrong_and_weight_is_care() {
-        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
-
-        profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
 
         Criteria criterions = new Criteria();
-        Answer other_answer = new Answer(question, BOOLEAN_QUESTION_ANSWER_YES);
+        Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_YES);
         criterions.add(new Criterion(other_answer, Weight.Important));
 
         boolean matches = profile.matches(criterions);
@@ -61,12 +61,10 @@ public class ProfileTest {
 
     @Test
     public void score_is_zero_when_criteria_is_not_match() {
-        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
-
-        profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
 
         Criteria criterions = new Criteria();
-        Answer other_answer = new Answer(question, BOOLEAN_QUESTION_ANSWER_YES);
+        Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_YES);
         criterions.add(new Criterion(other_answer, Weight.Important));
 
         profile.matches(criterions);
@@ -76,12 +74,10 @@ public class ProfileTest {
 
     @Test
     public void score_not_zero_when_criteria_is_match() {
-        BooleanQuestion question = new BooleanQuestion(1, "How old are u?");
-
-        profile.add(new Answer(question, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO));
 
         Criteria criterions = new Criteria();
-        Answer other_answer = new Answer(question, BOOLEAN_QUESTION_ANSWER_NO);
+        Answer other_answer = new Answer(booleanQuestion, BOOLEAN_QUESTION_ANSWER_NO);
         criterions.add(new Criterion(other_answer, Weight.Important));
 
         profile.matches(criterions);

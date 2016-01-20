@@ -1,6 +1,5 @@
 package iloveyouboss;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -8,25 +7,18 @@ import static org.junit.Assert.*;
 
 
 public class ProfileTest {
-
-    public static final int BOOLEAN_QUESTION_ANSWER_NO = 0;
-    public static final int BOOLEAN_QUESTION_ANSWER_YES = 1;
-
     private Profile profile = new Profile("xiao zhang");
 
     private Criteria empty_criteria = new Criteria();
     private Criteria criteria = new Criteria();
 
-    private BooleanQuestion BOOLEAN_QUESTION_DINNER = new BooleanQuestion(1, "Did you have dinner?");
-    private BooleanQuestion BOOLEAN_QUESTION_WEIGHT = new BooleanQuestion(3, "Are you too fat?");
+    private Answer ANSWER_NO_EAT_FOR_DINNER = new Answer(new BooleanQuestion(1, "Did you have dinner?"), Bool.FALSE);
+    private Answer ANSWER_YES_EAT_FOR_DINNER = new Answer(new BooleanQuestion(1, "Did you have dinner?"), Bool.TRUE);
 
-    private Answer ANSWER_NO_EAT_FOR_DINNER = new Answer(BOOLEAN_QUESTION_DINNER, BOOLEAN_QUESTION_ANSWER_NO);
-    private Answer ANSWER_YES_EAT_FOR_DINNER = new Answer(BOOLEAN_QUESTION_DINNER, BOOLEAN_QUESTION_ANSWER_YES);
+    private Answer ANSWER_YES_TOO_FAT_FOR_WEIGHT = new Answer(new BooleanQuestion(2, "Are you too fat?"), Bool.TRUE);
 
-    private Answer ANSWER_YES_TOO_FAT_FOR_WEIGHT = new Answer(BOOLEAN_QUESTION_WEIGHT, BOOLEAN_QUESTION_ANSWER_YES);
-
-    private Answer standard_answer_for_dinner = new Answer(BOOLEAN_QUESTION_DINNER, BOOLEAN_QUESTION_ANSWER_YES);
-    private Answer standard_answer_for_your_weight = new Answer(BOOLEAN_QUESTION_WEIGHT, BOOLEAN_QUESTION_ANSWER_NO);
+    private Answer standard_answer_for_dinner = new Answer(new BooleanQuestion(1, "Did you have dinner?"), Bool.TRUE);
+    private Answer standard_answer_for_your_weight = new Answer(new BooleanQuestion(2, "Are you too fat?"), Bool.FALSE);
 
     private Criterion EAT_DINNER_CRITERION = new Criterion(standard_answer_for_dinner, Weight.Important);
     private Criterion WEIGHT_CRITERION = new Criterion(standard_answer_for_your_weight, Weight.DontCare);
@@ -90,7 +82,7 @@ public class ProfileTest {
         PercentileQuestion percentileQuestion = new PercentileQuestion(1, "Which color do u like best?", new String[] {"green","red","yellow"});
         Answer answer = new Answer(percentileQuestion,"green");
 
-        profile.add(new Answer(BOOLEAN_QUESTION_DINNER, BOOLEAN_QUESTION_ANSWER_NO));
+        profile.add(ANSWER_NO_EAT_FOR_DINNER);
         profile.add(answer);
 
         Criterion percentageCriteria = new Criterion(answer,Weight.VeryImportant);

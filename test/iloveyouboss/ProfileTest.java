@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 public class ProfileTest {
     private Profile profile = new Profile("xiao zhang");
 
-    private Criteria empty_criteria = new Criteria();
     private Criteria criteria = new Criteria();
 
     private Answer ANSWER_NO_EAT_FOR_DINNER = new Answer(new BooleanQuestion(1, "Did you have dinner?"), Bool.FALSE);
@@ -26,7 +25,7 @@ public class ProfileTest {
 
     @Test
     public void not_match_when_criteria_is_empty() {
-        boolean matches = profile.matches(empty_criteria);
+        boolean matches = profile.matches(new Criteria());
 
         assertThat(matches, is(false));
     }
@@ -53,7 +52,7 @@ public class ProfileTest {
 
     @Test
     public void score_is_zero_when_criteria_is_empty() {
-        profile.matches(empty_criteria);
+        profile.matches(new Criteria());
         assertThat(profile.score(), is(0));
     }
 
